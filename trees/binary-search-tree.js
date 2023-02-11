@@ -11,7 +11,7 @@
 // Binary Search Tree
 // lookup -> O(log n)
 // insert -> O(log n)
-// delete -> O(log n)
+// remove -> O(log n)
 
 // Phone Book
 // You don't check every single person in the phone book
