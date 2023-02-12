@@ -221,9 +221,9 @@ console.log(tree.lookup(10)); */
 console.log(JSON.stringify(traverse(tree.root)));
 
 function traverse(node) {
-  const tree = { value: node.value };
-  tree.left = !node.left ? null : traverse(node.left);
-  tree.right = !node.right ? null : traverse(node.right);
+  if(!node) {
+    return null;
+  }
 
-  return tree;
+  return { value: node.value, left: traverse(node.left), right: traverse(node.right) };
 }
