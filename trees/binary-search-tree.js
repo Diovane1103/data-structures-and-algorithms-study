@@ -175,6 +175,159 @@ class BinarySearchTree {
       }
     }
   }
+
+  breadthFirstSearch() {
+    let currentNode = this.root;
+    let list = [];
+    let queue = new Queue(); // Linked List
+
+    queue.enqueue(currentNode);
+
+    while(!queue.isEmpty()) {
+      // Get the first item in the queue and remove it from the queue
+      currentNode = queue.dequeue();
+      list.push(currentNode.value.value);
+
+      if(currentNode.value.left) {
+        queue.enqueue(currentNode.value.left);
+      }
+
+      if(currentNode.value.right) {
+        queue.enqueue(currentNode.value.right);
+      }
+    }
+
+    return list;
+  }
+
+  breadthFirstSearchRecursive(queue, list) {
+    if(queue.isEmpty()) {
+      return list;
+    }
+
+    let currentNode = queue.dequeue();
+    list.push(currentNode.value.value);
+
+    if(currentNode.value.left) {
+      queue.enqueue(currentNode.value.left);
+    }
+
+    if(currentNode.value.right) {
+      queue.enqueue(currentNode.value.right);
+    }
+
+    return this.breadthFirstSearchRecursive(queue, list);
+  }
+
+  depthFirstSearchInOrder() {
+    return traverseInOrder(this.root, []);
+  }
+
+  depthFirstSearchPostOrder() {
+    return traversePostOrder(this.root, []);
+  }
+
+  depthFirstSearchPreOrder() {
+    return traversePreOrder(this.root, []);
+  }
+}
+
+function traverseInOrder(node, list) {
+  if(node.left) {
+    traverseInOrder(node.left, list);
+  }
+
+  list.push(node.value);
+
+  if(node.right) {
+    traverseInOrder(node.right, list);
+  }
+
+  return list;
+}
+
+function traversePreOrder(node, list) {
+  list.push(node.value);
+
+  if(node.left) {
+    traversePreOrder(node.left, list);
+  }
+
+  if(node.right) {
+    traversePreOrder(node.right, list);
+  }
+
+  return list;
+}
+
+function traversePostOrder(node, list) {
+  if(node.left) {
+    traversePostOrder(node.left, list);
+  }
+
+  if(node.right) {
+    traversePostOrder(node.right, list);
+  }
+
+  list.push(node.value);
+
+  return list;
+}
+
+class QueueNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class Queue {
+  constructor() {
+    this.first = null;
+    this.last = null;
+    this.length = 0;
+  }
+
+  peek() {
+    return this.first;
+  }
+
+  enqueue(value) {
+    const newNode = new QueueNode(value);
+    
+    if(this.isEmpty()) {
+      this.first = newNode;
+      this.last = newNode;
+    } else {
+      this.last.next = newNode;
+      this.last = newNode;
+    }
+    
+    this.length++;
+
+    return this;
+  }
+
+  dequeue() {
+    const leader = this.first;
+
+    if(this.isEmpty()) {
+      return leader;
+    }
+
+    if(this.first === this.last) {
+      this.last = null;
+    }
+
+    this.first = this.first.next;
+    this.length--;
+
+    return leader;
+  }
+
+  isEmpty() {
+    return !this.first
+  }
 }
 
 //       9
@@ -189,6 +342,14 @@ tree.insert(1);
 tree.insert(6);
 tree.insert(15);
 tree.insert(170);
+// console.log(tree.breadthFirstSearch());
+// const queue = new Queue();
+// queue.enqueue(tree.root);
+// console.log(tree.breadthFirstSearchRecursive(queue, []));
+console.log(tree.depthFirstSearchInOrder(tree.root, []));
+console.log(tree.depthFirstSearchPreOrder(tree.root, []));
+console.log(tree.depthFirstSearchPostOrder(tree.root, []));
+
 // Adding complexity
 // Not so Beautiful
 // tree.insert(21);
@@ -218,7 +379,7 @@ console.log(tree.lookup(10)); */
 // tree.remove(20);
 // tree.remove(9);
 
-console.log(JSON.stringify(traverse(tree.root)));
+// console.log(JSON.stringify(traverse(tree.root)));
 
 function traverse(node) {
   if(!node) {

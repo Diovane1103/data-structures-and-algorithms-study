@@ -5,6 +5,7 @@ var isValidBST = function(root) {
 };
 
 function validate(node, min = null, max = null) {
+  
   if (max !== null && node.val >= max) {
     return false;
   }
