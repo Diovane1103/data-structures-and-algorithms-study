@@ -17,10 +17,10 @@ const graph3 = {
   3: [0, 1, 1, 0]
 }
 
-
 class Graph {
   constructor() {
     this.numberOfVertexes = 0;
+    this.vertices = [];
     this.adjacentList = {};
   }
 
@@ -29,6 +29,7 @@ class Graph {
       return 'Vertex is already added into the graph';
     }
 
+    this.vertices.push(node);
     this.adjacentList[node] = [];
     this.numberOfVertexes++;
 
@@ -52,6 +53,26 @@ class Graph {
     return this;
   }
 
+  removeEdge(node1, node2) {
+    if(this.isVertexAlreadyAdded(node1)) {
+      const filteredArray = this.adjacentList[node1].filter(node => node !== node2);
+      this.adjacentList[node1] = filteredArray;
+    }
+
+    if(this.isVertexAlreadyAdded(node2)) {
+      const filteredArray = this.adjacentList[node2].filter(node => node !== node1);
+      this.adjacentList[node2] = filteredArray;
+    }
+  }
+
+  removeVertex(node) {
+    this.adjacentList[node].forEach(connectedNode => {
+      this.removeEdge(node, connectedNode);
+    })
+
+    this.adjacentList[node] = undefined;
+  }
+
   isEdgeValid(leadNode, fellowNode) {
     return !! this.adjacentList[leadNode].find(i => i === fellowNode);
   }
@@ -60,9 +81,52 @@ class Graph {
     return Object.hasOwn(this.adjacentList, node);
   }
 
+  depthFirstSearch(goal, v = this.vertices[0], discovered = []) {
+      let adj = this.adjacentList;
+
+      discovered[v] = true;
+
+      for(let i = 0; i < adj[v].length; i++) {
+        let w = adj[v][i];
+
+        if(!discovered[w]) {
+          this.depthFirstSearch(goal, w, discovered)
+        }
+      }
+
+      return discovered[goal] || false;
+  }
+
+  breadthFirstSearch(goal, root = this.vertices[0]) {
+    let adj = this.adjacentList;
+
+    const queue = [];
+    queue.push(root);
+
+    const discovered = [];
+    discovered[root] = true;
+    
+    while (queue.length) {
+      let v = queue.shift();
+
+      if(v === goal) {
+        return true;
+      }
+
+      for (let i = 0; i < adj[v].length; i++) {
+        if(!discovered[adj[v][i]]) {
+          discovered[adj[v][i]] = true;
+          queue.push(adj[v][i]);
+        }
+      }
+    }
+
+    return false;
+  }
+
   showConnections() { 
     Object.entries(this.adjacentList).forEach( ([node, connections]) => {
-        console.log(`${node} --> ${connections.join(' ')}`)
+        console.log(`${node} --> ${connections ? connections.join(' ') : connections}`)
     })
   }
 
@@ -84,10 +148,13 @@ graph.addEdge('1', '2');
 graph.addEdge('1', '0');
 graph.addEdge('0', '2');
 graph.addEdge('6', '5');
+console.log(graph.breadthFirstSearch('5'));
+// console.log(graph.depthFirstSearch('5'));
+// graph.removeVertex('6');
 // See if validation is working
 // console.log(graph.addEdge('7', '5'));
 
-graph.showConnections();
+// graph.showConnections();
 
 //Answer:
 // 0 --> 1, 2 
