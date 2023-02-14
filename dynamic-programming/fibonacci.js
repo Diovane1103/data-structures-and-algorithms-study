@@ -14,6 +14,14 @@ function methods() {
   }
 }
 
+function fib() {
+  let answer = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    answer.push(answer[i-2] + answer[i - 1]);
+  }
+  answer.pop();
+}
+
 const fibonacci = methods();
 
 console.log(fibonacci(8));
